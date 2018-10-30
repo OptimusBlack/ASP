@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clinic_manager.apps.ClinicManagerConfig',
+    'ha.apps.HaConfig',
 ]
 
 MIDDLEWARE = [
