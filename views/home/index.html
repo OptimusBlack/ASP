@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block headers %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/style.css' %}">
+{% endblock %}
+{% block page %}
+    <div class="row" id="heading">
+        <div class="col-4">
+            <h1>AS-P</h1>
+        </div>
+        <div class="offset-6 col-2">
+            <a href="/login"><button type="button" class="btn btn-outline-dark">Login</button></a>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center" id="welcome-text">
+        <p>Welcome to AS-P</p>
+    </div>
+{% endblock %}
