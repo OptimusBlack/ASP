@@ -15,7 +15,7 @@ class Order(models.Model):
         except json.JSONDecodeError:
             print("Error decoding JSON")
 
-    def getOrderDetails(self, i):
+    def getOrderByIndex(self, i):
         try:
             return self.objects.all()[i]
         except IndexError:
