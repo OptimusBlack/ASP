@@ -8,14 +8,14 @@ class Order(models.Model):
     def __str__(self):
         return str(self.orderId)
 
-    def createOrder(self, contents):
+    def create_order(self, contents):
         self.dateOrdered = timezone.now()
         try:
             self.contents = json.dumps(contents)
         except json.JSONDecodeError:
             print("Error decoding JSON")
 
-    def getOrderByIndex(self, i):
+    def get_order_by_index(self, i):
         try:
             return self.objects.all()[i]
         except IndexError:
