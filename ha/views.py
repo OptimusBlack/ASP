@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from .models import Stock
 
 
 def add_to_database(data):
     """
-        The data is in the form of a JSON object:
-            {'product_name': 'Name', 'product_price': 12.0}
+    Adds the data argument to the database
+    :param data: {'product_name': <String max = 200>, 'product_price': <Float>}
+    :return: None
     """
     s = Stock()
     s.name = data['product_name']
@@ -15,6 +16,11 @@ def add_to_database(data):
 
 
 def add_stock(request):
+    """
+    Add a product to the stock available for order
+    :param request: request object
+    :return: renders the form for input
+    """
     from .forms import AddStockForm
 
     if request.method == 'POST':

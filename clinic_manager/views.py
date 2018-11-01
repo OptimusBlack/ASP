@@ -11,6 +11,11 @@ from ha.models import Stock
 
 
 def index(request):
+    """
+    Render the home for the Clinic Manager
+    :param request: Request object
+    :return: renders the homepage for the clinic manager
+    """
     stock_available = Stock.objects.all()
     context = {
         'products': []
@@ -25,5 +30,4 @@ def index(request):
         o['price'] = product.price
         context['products'].append(o.copy())
 
-    print(context)
     return render(request, 'clinic_manager/index.html', context=context)
