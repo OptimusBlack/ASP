@@ -4,3 +4,11 @@ venv/
 .idea/usage.statistics.xml
 .idea/tasks.xml
 .idea/modules.xml
+.idea/dataSources.local.xml
+.idea/dataSources/
+.idea/jsLibraryMappings.xml
+clinic_manager/__pycache__/
+clinic_manager/migrations/__pycache__/
+ha/__pycache__/
+ha/migrations/__pycache__/
+home/__pycache__/

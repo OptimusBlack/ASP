@@ -7,13 +7,11 @@
 """
 
 from django.shortcuts import render
-from django.http import HttpResponse
 from ha.models import Stock
 
 
 def index(request):
     stock_available = Stock.objects.all()
-    print(list(stock_available))
     context = {
         'products': []
     }
