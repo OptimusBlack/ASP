@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block page %}
+    <div class="row">
+        <form action="/ha/addstock/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+{% endblock %}
