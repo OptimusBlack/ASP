@@ -15,3 +15,10 @@ class Stock(models.Model):
     weight_per_unit = models.FloatField(default=0.0)
     description = models.TextField(default='Amazing medicine')
     category = models.CharField(max_length=200, default='IV Fluids')
+
+
+class LocationData(models.Model):
+    name = models.TextField(default='{}')
+    lat = models.FloatField(default=0.0)
+    lng = models.FloatField(default=0.0)
+    distances = models.TextField(default='{}')
