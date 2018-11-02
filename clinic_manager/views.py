@@ -26,8 +26,12 @@ def index(request):
     }
 
     for product in stock_available:
+        o['id'] = product.id
         o['name'] = product.name
         o['price'] = product.price
+        o['weight'] = product.weight_per_unit
+        o['category'] = product.category
+        o['description'] = product.description
         context['products'].append(o.copy())
 
     return render(request, 'clinic_manager/index.html', context=context)

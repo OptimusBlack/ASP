@@ -39,7 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'clinic_manager.apps.ClinicManagerConfig',
     'ha.apps.HaConfig',
+    'home.apps.HomeConfig',
+    'dispatcher.apps.DispatcherConfig'
 ]
+
+"""
+INSTALLED_APPS.append('django_extensions')
+"""
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,8 +62,7 @@ ROOT_URLCONF = 'ASP.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'views')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'views')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
