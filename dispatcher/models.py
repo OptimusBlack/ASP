@@ -11,7 +11,7 @@ class Dispatcher(User):
 
 class DispatchQueue(models.Model):
     """
-
+    Model for the dispatch queue
     """
     def __str__(self):
         return str(self.queue_number)

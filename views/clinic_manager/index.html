@@ -8,7 +8,10 @@
         <div class="col-4">
             <h1>AS-P</h1>
         </div>
-        <div class="offset-6 col-2">
+        <div class="offset-4 col-2">
+            <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=placeOrder()>Checkout</button>
+        </div>
+        <div class="col-2">
             <h4>Hello Clinic Manager</h4>
         </div>
     </div>
@@ -32,9 +35,12 @@
                                     <h5>HK$ {{ product.price }}</h5>
                                     <h5>Weight per unit: {{ product.weight }}</h5>
                                     <h5>Category: {{ product.category }}</h5>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input id='qty{{ product.id }}' type="text" class="form-control quantity_input" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" placeholder="Quantity">
+                                    </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-secondary btn-lg btn-block">Order</button>
+                                    <button class="btn btn-secondary btn-lg btn-block order-button" onClick=addToCart({{ product.id }})>Order</button>
                                 </div>
                             </div>
                         </div>
@@ -47,4 +53,5 @@
         </div>        <!-- /.row -->
 
     </div>    <!-- /.container -->
+    <script src={% static 'clinic_manager/app.js' %}></script>
 {% endblock %}

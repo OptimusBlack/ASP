@@ -18,7 +18,6 @@ class ClinicManager(User):
         return str(self.username)
 
     # This needs to be handled using json.dumps() and json.loads()
-    order_cart = models.TextField(default="{}")
     clinic_name = models.TextField(default='')
 
 
@@ -32,24 +31,11 @@ class Order(models.Model):
         return str(self.id)
 
     def create_order(self):
+        print("Creating order....")
         self.date_ordered = timezone.now()
         self.order_status = 'Queued for Processing'
         self.order_clinic = 'clinic'
         self.save()
-
-    def  add_to_order(self, order):
-        """
-        Add a product to order
-        :param order: {id, weight, qty}
-        :return: None
-        """
-        order_id = order.id
-        old_contents = list(json.loads(self.contents).orders)
-        old_contents.append({'order_id': order_id, 'qty': order.qty})
-
-        self.total_weight += order.weight * order.qty
-        self.contents = json.dumps(old_contents)
-        self.priority_level = order.priority
 
     def get_order_by_index(self, i):
         try:
@@ -59,8 +45,7 @@ class Order(models.Model):
             return None
 
     date_ordered = models.DateTimeField('Date of Order')
-    # This needs to be handled using json.dumps() and json.loads()
-    contents = models.TextField(default="{}")
+    contents = models.TextField(default=json.dumps({'contents': []}))
     total_weight = models.FloatField(default=0.0)
     priority_level = models.CharField(max_length=200, default='')
     order_status = models.TextField()
