@@ -8,7 +8,10 @@ venv/
 .idea/dataSources/
 .idea/jsLibraryMappings.xml
 clinic_manager/__pycache__/
+*/__pycache__/
+*/*/__pycache__/
 clinic_manager/migrations/__pycache__/
 ha/__pycache__/
 ha/migrations/__pycache__/
 home/__pycache__/
+seqdiags/

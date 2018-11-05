@@ -10,7 +10,9 @@ class Dispatcher(User):
 
 
 class DispatchQueue(models.Model):
+    """
 
+    """
     def __str__(self):
         return str(self.queue_number)
 

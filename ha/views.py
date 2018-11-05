@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import Stock
+from .models import Item
 
 
 def add_to_database(data):
@@ -9,7 +9,7 @@ def add_to_database(data):
     :param data: {'product_name': <String max = 200>, 'product_price': <Float>}
     :return: None
     """
-    s = Stock()
+    s = Item()
     s.name = data['product_name']
     s.price = data['product_price']
     s.save()

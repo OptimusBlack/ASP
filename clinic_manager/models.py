@@ -19,6 +19,7 @@ class ClinicManager(User):
 
     # This needs to be handled using json.dumps() and json.loads()
     order_cart = models.TextField(default="{}")
+    clinic_name = models.TextField(default='')
 
 
 class Order(models.Model):
@@ -33,6 +34,7 @@ class Order(models.Model):
     def create_order(self):
         self.date_ordered = timezone.now()
         self.order_status = 'Queued for Processing'
+        self.order_clinic = 'clinic'
         self.save()
 
     def  add_to_order(self, order):
@@ -62,3 +64,4 @@ class Order(models.Model):
     total_weight = models.FloatField(default=0.0)
     priority_level = models.CharField(max_length=200, default='')
     order_status = models.TextField()
+    order_clinic = models.TextField(default='')

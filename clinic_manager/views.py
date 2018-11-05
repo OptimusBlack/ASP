@@ -7,7 +7,7 @@
 """
 
 from django.shortcuts import render
-from ha.models import Stock
+from ha.models import Item
 
 
 def index(request):
@@ -16,7 +16,7 @@ def index(request):
     :param request: Request object
     :return: renders the homepage for the clinic manager
     """
-    stock_available = Stock.objects.all()
+    stock_available = Item.objects.all()
     context = {
         'products': []
     }

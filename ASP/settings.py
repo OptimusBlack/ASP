@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'dispatcher.apps.DispatcherConfig'
 ]
 
-"""
+#"""
 INSTALLED_APPS.append('django_extensions')
-"""
+#"""
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

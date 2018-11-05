@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Stock(models.Model):
+class Item(models.Model):
     """
     Model for the Product Catalog
 
@@ -21,4 +21,5 @@ class LocationData(models.Model):
     name = models.TextField(default='{}')
     lat = models.FloatField(default=0.0)
     lng = models.FloatField(default=0.0)
+    alt = models.FloatField(default=0.0)
     distances = models.TextField(default='{}')
