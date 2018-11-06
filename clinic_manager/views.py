@@ -21,6 +21,8 @@ def index(request):
     :return: renders the homepage for the clinic manager
     """
     request.session['cart'] = []
+    request.session['clinic'] = "Peng Chau General Out-patient Clinic"
+
     stock_available = Item.objects.all()
     context = {
         'products': []
@@ -33,7 +35,6 @@ def index(request):
     for product in stock_available:
         o['id'] = product.id
         o['name'] = product.name
-        o['price'] = product.price
         o['weight'] = product.weight_per_unit
         o['category'] = product.category
         o['description'] = product.description
@@ -57,7 +58,12 @@ def add_to_cart(request):
 
 def place_order(request):
     if len(request.session['cart']) > 0:
-        place_order_for_user(request.session['cart'])
-        request.session['cart'] = []
-        request.session.modified = True
-    return HttpResponse()
+        if place_order_for_user(request.session['cart'], request.session['clinic']):
+            request.session['cart'] = []
+            request.session.modified = True
+            return HttpResponse(json.dumps({'status': 'success'}))
+        else:
+            request.session['cart'] = []
+            return HttpResponse(json.dumps({'status': 'overweight'}))
+    else:
+        return HttpResponse(json.dumps({'status': 'emptycart'}))

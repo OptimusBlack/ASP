@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block headers %}
+{% endblock %}
+{% block page %}
+    <div class="row" id="heading">
+        <div class="col-4">
+            <h1>AS-P</h1>
+        </div>
+        <div class="col-4 offset-4">
+            <h4>Hello Dispatcher</h4>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <div class="row">
+                    <h2>Orders in Queue</h2>
+                    {% for order in orders %}
+                        <div class="col-lg-12 col-md-12 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        Order Id: {{order.id}}
+                                    </h4>
+                                    <h5>Weight per unit: {{ order.total_weight }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div><!-- /.row -->
+                <div class="row">
+                    <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_pop()>Pop Next</button>
+                </div>
+                <div class="row">
+                    <h2>Orders added to Dispatch</h2>
+                    {% for order in dispatch %}
+                        <div class="col-lg-12 col-md-12 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        Order Id: {{order.id}}
+                                    </h4>
+                                    <h5>Weight per unit: {{ order.total_weight }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div><!-- /.row -->
+                <div class="row">
+                    <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_dispatch()>Dispatch</button>
+                </div>
+            </div>            <!-- /.col-lg-12 -->
+
+        </div>        <!-- /.row -->
+
+    </div>    <!-- /.container -->
+    <script src={% static 'dispatcher/app.js' %}></script>
+{% endblock %}

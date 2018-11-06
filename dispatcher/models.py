@@ -1,6 +1,7 @@
 from django.db import models
 from home.models import User
 from clinic_manager.models import Order
+import json
 
 
 class Dispatcher(User):
@@ -16,6 +17,5 @@ class DispatchQueue(models.Model):
     def __str__(self):
         return str(self.queue_number)
 
-    queue_number = models.IntegerField(default=-1)
-    orders = [Order]
-
+    queue_number = models.IntegerField()
+    order_id = models.IntegerField()
