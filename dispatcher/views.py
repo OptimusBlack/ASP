@@ -13,6 +13,7 @@ def index(request):
         request.session['dispatch'] = []
     for d in dispatch_queue:
         order_details = Order.objects.get(id=d.order_id)
+        order_details.total_weight = round(order_details.total_weight, 2)
         display_view.append(order_details)
 
     print("DispatchQueue:", request.session['dispatch'])

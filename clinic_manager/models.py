@@ -46,6 +46,6 @@ class Order(models.Model):
     date_ordered = models.DateTimeField()
     contents = models.TextField(default=json.dumps({'contents': []}))
     total_weight = models.FloatField(default=0.0)
-    priority_level = models.CharField(max_length=200, default='')
+    priority_level = models.CharField(max_length=200, default='Low')
     order_status = models.TextField()
     order_clinic = models.TextField(default='')

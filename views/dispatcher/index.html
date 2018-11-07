@@ -19,7 +19,7 @@
             <div class="col-lg-12">
 
                 <div class="row">
-                    <h2>Orders in Queue</h2>
+                    <h2>Queued for dispatch</h2>
                     {% for order in orders %}
                         <div class="col-lg-12 col-md-12 mb-4">
                             <div class="card h-100">
@@ -38,7 +38,7 @@
                     <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_pop()>Pop Next</button>
                 </div>
                 <div class="row">
-                    <h2>Orders added to Dispatch</h2>
+                    <h2>Ready to dispatch</h2>
                     {% for order in dispatch %}
                         <div class="col-lg-12 col-md-12 mb-4">
                             <div class="card h-100">

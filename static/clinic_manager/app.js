@@ -24,6 +24,18 @@ addToCart = (id) => {
     }
 };
 
+checkout = () =>{
+    $.ajax({
+        url: "/clinic_manager/checkout/",
+        method: "GET",
+        type: "GET",
+        headers:{
+            "X-CSRFToken": '{{csrf_token}}',
+            "Content-type" : 'application/json'
+        },
+    });
+};
+
 placeOrder = () =>{
     console.log("Placing order");
     $.ajax({

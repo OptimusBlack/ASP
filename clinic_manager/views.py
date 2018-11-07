@@ -25,7 +25,8 @@ def index(request):
 
     stock_available = Item.objects.all()
     context = {
-        'products': []
+        'products': [],
+        'cart': []
     }
     o = {
         'name': "",
@@ -39,6 +40,7 @@ def index(request):
         o['category'] = product.category
         o['description'] = product.description
         context['products'].append(o.copy())
+        context['cart'] = request.session['cart']
 
     return render(request, 'clinic_manager/index.html', context=context)
 
@@ -67,3 +69,10 @@ def place_order(request):
             return HttpResponse(json.dumps({'status': 'overweight'}))
     else:
         return HttpResponse(json.dumps({'status': 'emptycart'}))
+
+
+def checkout(request):
+    context = {
+        'products': request.session['cart']
+    }
+    return render(request, 'clinic_manager/checkout.html', context=context)
