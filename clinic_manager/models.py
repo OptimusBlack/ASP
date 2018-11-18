@@ -15,7 +15,7 @@ class ClinicManager(User):
         Display when printed
         :return: Username of the user in string format
         """
-        return str(self.username)
+        return str(self.user.username)
 
     clinic_name = models.TextField(default='')
 

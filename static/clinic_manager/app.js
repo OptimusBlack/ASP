@@ -38,10 +38,13 @@ checkout = () =>{
 
 placeOrder = () =>{
     console.log("Placing order");
+    let priority = $('#priority').val();
     $.ajax({
         url: "/clinic_manager/place_order/",
-        method: "GET",
-        type: "GET",
+        method: "POST",
+        type: "POST",
+        dataType: "json",
+        data: JSON.stringify({'priority': priority}),
         headers:{
             "X-CSRFToken": '{{csrf_token}}',
             "Content-type" : 'application/json'

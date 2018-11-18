@@ -3,7 +3,7 @@ from .models import Order
 from ha.models import Item
 
 
-def place_order_for_user(cart, clinic):
+def place_order_for_user(cart, clinic, priority='Low'):
     permissible_weight = 23.5
     total_weight = 0
     new_order = Order()
@@ -21,6 +21,7 @@ def place_order_for_user(cart, clinic):
 
     if total_weight > permissible_weight:
         return False
-    new_order.priority_level = 0
+    new_order.priority_level = priority
     new_order.create_order(clinic)
+
     return True

@@ -7,7 +7,7 @@ import json
 class Dispatcher(User):
 
     def __str__(self):
-        return str(self.username)
+        return str(self.user.username)
 
 
 class DispatchQueue(models.Model):

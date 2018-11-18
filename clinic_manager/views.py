@@ -58,17 +58,23 @@ def add_to_cart(request):
         return HttpResponse("Done")
 
 
+@csrf_exempt
 def place_order(request):
-    if len(request.session['cart']) > 0:
-        if place_order_for_user(request.session['cart'], request.session['clinic']):
-            request.session['cart'] = []
-            request.session.modified = True
-            return HttpResponse(json.dumps({'status': 'success'}))
+    if request.method == 'POST':
+        req = json.loads(request.body.decode('utf-8'))
+        print(req)
+        if len(request.session['cart']) > 0:
+            if place_order_for_user(request.session['cart'], request.session['clinic'], req['priority']):
+                request.session['cart'] = []
+                request.session.modified = True
+                return HttpResponse(json.dumps({'status': 'success'}))
+            else:
+                request.session['cart'] = []
+                return HttpResponse(json.dumps({'status': 'overweight'}))
         else:
-            request.session['cart'] = []
-            return HttpResponse(json.dumps({'status': 'overweight'}))
+            return HttpResponse(json.dumps({'status': 'emptycart'}))
     else:
-        return HttpResponse(json.dumps({'status': 'emptycart'}))
+        return HttpResponse()
 
 
 def checkout(request):

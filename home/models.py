@@ -1,15 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User as UserDjango
 
 
 class User(models.Model):
     """
     Model for a user in the application
     """
-    username = models.CharField(max_length=100)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email_id = models.CharField(max_length=500)
-    password = models.CharField(max_length=500)
+    user = models.OneToOneField(UserDjango, on_delete=models.CASCADE, default=None)
 
 
 class RegistrationToken(models.Model):
