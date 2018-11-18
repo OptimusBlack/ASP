@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'clinic_manager.apps.ClinicManagerConfig',
     'ha.apps.HaConfig',
     'home.apps.HomeConfig',
-    'dispatcher.apps.DispatcherConfig'
+    'dispatcher.apps.DispatcherConfig',
+    'warehouse.apps.WarehouseConfig'
 ]
 
 """

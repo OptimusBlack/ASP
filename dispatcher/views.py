@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .functions import dispatch_order
 from .models import DispatchQueue
-from .models import Order
+from clinic_manager.models import Order
 from ha.models import LocationData
 
 

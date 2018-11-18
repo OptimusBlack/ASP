@@ -5,6 +5,7 @@ from .models import RegistrationToken
 from django.contrib.auth.models import User
 from clinic_manager.models import ClinicManager
 
+
 def index(request):
     template = 'home/index.html'
     return HttpResponse(render(request, template))

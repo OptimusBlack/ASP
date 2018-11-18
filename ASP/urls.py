@@ -22,5 +22,6 @@ urlpatterns = [
     path('clinic_manager/', include('clinic_manager.urls')),
     path('ha/', include('ha.urls')),
     path('dispatcher/', include('dispatcher.urls')),
+    path('warehouse/', include('warehouse.urls')),
     path('admin/', admin.site.urls)
 ]
