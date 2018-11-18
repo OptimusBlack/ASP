@@ -14,6 +14,7 @@ class Item(models.Model):
     weight_per_unit = models.FloatField()
     description = models.TextField(default='')
     category = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='imgs')
 
 
 class LocationData(models.Model):

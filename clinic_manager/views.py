@@ -39,6 +39,8 @@ def index(request):
         o['weight'] = product.weight_per_unit
         o['category'] = product.category
         o['description'] = product.description
+        o['image'] = product.image
+
         context['products'].append(o.copy())
         context['cart'] = request.session['cart']
 
