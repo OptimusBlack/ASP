@@ -10,3 +10,10 @@ class User(models.Model):
     last_name = models.CharField(max_length=100)
     email_id = models.CharField(max_length=500)
     password = models.CharField(max_length=500)
+
+
+class RegistrationToken(models.Model):
+    email = models.CharField(max_length=500)
+    token = models.CharField(max_length=200)
+    role = models.CharField(max_length=200)
+
