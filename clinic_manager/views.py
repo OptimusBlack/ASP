@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from ha.models import Item
+from warehouse.models import ProcessQueue
 from .functions import place_order_for_user
 import json
 
@@ -67,6 +68,7 @@ def place_order(request):
         print(req)
         if len(request.session['cart']) > 0:
             if place_order_for_user(request.session['cart'], request.session['clinic'], req['priority']):
+
                 request.session['cart'] = []
                 request.session.modified = True
                 return HttpResponse(json.dumps({'status': 'success'}))
@@ -77,10 +79,3 @@ def place_order(request):
             return HttpResponse(json.dumps({'status': 'emptycart'}))
     else:
         return HttpResponse()
-
-
-def checkout(request):
-    context = {
-        'products': request.session['cart']
-    }
-    return render(request, 'clinic_manager/checkout.html', context=context)

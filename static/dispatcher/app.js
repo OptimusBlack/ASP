@@ -12,12 +12,12 @@ execute_dispatch = () => {
         method: "GET",
         type: "GET",
         success: function(result){
-                console.log(result);
-                let url = window.URL.createObjectURL(new Blob([result], {type: 'text/csv'}));
-                let $a = $('<a />', {
-                'href': url,
-                'download': 'download.csv',
-                'text': "click"
+            console.log(result);
+            let url = window.URL.createObjectURL(new Blob([result], {type: 'text/csv'}));
+            let $a = $('<a />', {
+            'href': url,
+            'download': 'download.csv',
+            'text': "click"
             }).hide().appendTo("body")[0].click();
         }
     });

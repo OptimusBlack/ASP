@@ -4,9 +4,6 @@ from . import views
 
 urlpatterns = [
     path('home/', views.index, name='index'),
+    path('pop/', views.do_pop, name='pop'),
+    path('process/', views.process, name='process'),
 ]
-
-"""
-path('pop/', views.do_pop, name='pop'),
-    path('queue_dispatch/', views.dispatch, name='queue_dispatch'),
-"""
