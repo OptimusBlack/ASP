@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block headers %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/style.css' %}">
+{% endblock %}
+{% block page %}
+    <form action="/register_after_token/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}
