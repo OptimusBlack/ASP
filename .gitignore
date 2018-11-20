@@ -7,6 +7,8 @@ venv/
 .idea/dataSources.local.xml
 .idea/dataSources/
 .idea/jsLibraryMappings.xml
+.idea/ASP.iml
+.idea/misc.xml
 clinic_manager/__pycache__/
 */__pycache__/
 */*/__pycache__/
@@ -16,5 +18,3 @@ ha/migrations/__pycache__/
 home/__pycache__/
 seqdiags/
 db.sqlite3
-.idea/ASP.iml
-.idea/misc.xml
