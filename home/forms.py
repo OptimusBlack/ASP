@@ -3,7 +3,8 @@ from django import forms
 
 class RegistrationForm(forms.Form):
     email = forms.CharField(max_length=200)
-    role = forms.CharField(max_length=100)
+    #role = forms.CharField(max_length=100)
+    role = forms.ChoiceField(choices=[('Dispatcher', 'Dispatcher'), ('Warehouse', 'Warehouse Personnel'), ('Clinic Manager', 'Clinic Manager')])
 
 
 class RegistrationTokenForm(forms.Form):
