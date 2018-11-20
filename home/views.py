@@ -5,6 +5,8 @@ from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
 from clinic_manager.models import ClinicManager
+from dispatcher.models import Dispatcher
+from warehouse.models import WarehousePersonnel
 
 
 def index(request):
@@ -26,6 +28,11 @@ def login_page(request):
                 login(request, user)
                 if ClinicManager.objects.get(user=user) is not None:
                     return HttpResponseRedirect('/clinic_manager/home')
+                elif Dispatcher.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/dispatcher/home')
+                elif WarehousePersonnel.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/warehouse/home')
+
             else:
                 print("Not authenticated")
             return HttpResponseRedirect('/')
@@ -68,16 +75,22 @@ def register_with_token(request):
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
 
-            authUser = RegistrationToken.objects.get(token=token)
+            auth_user = RegistrationToken.objects.get(token=token)
 
             # Handle user registration to different types here
             # Note that there will be a switch to django.auth required first
 
-            user_django = UserDjango.objects.create_user(username=username, email=authUser.email, password=password,
+            user_django = UserDjango.objects.create_user(username=username, email=auth_user.email, password=password,
                                                          first_name=first_name, last_name=last_name)
-            if authUser.role == "Clinic Manager":
+            if auth_user.role == "Clinic Manager":
                 clinic_manager = ClinicManager(user=user_django, clinic_name=clinic_name)
                 clinic_manager.save()
+            elif auth_user.role == "Dispatcher":
+                dispatcher = Dispatcher(user=user_django)
+                dispatcher.save()
+            elif auth_user.role == "Warehouse Personnel":
+                warehouse_personnel = WarehousePersonnel(user=user_django)
+                warehouse_personnel.save()
 
             return HttpResponseRedirect('/')
 
