@@ -10,7 +10,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from ha.models import Item
-from warehouse.models import ProcessQueue
+from .models import ClinicManager
+from .models import Order
 from .functions import place_order_for_user
 import json
 
@@ -21,8 +22,10 @@ def index(request):
     :param request: Request object
     :return: renders the homepage for the clinic manager
     """
+
+    current_user = ClinicManager.objects.get(user=request.user)
     request.session['cart'] = []
-    request.session['clinic'] = "Peng Chau General Out-patient Clinic"
+    request.session['clinic'] = current_user.clinic_name
 
     stock_available = Item.objects.all()
     context = {
@@ -79,3 +82,16 @@ def place_order(request):
             return HttpResponse(json.dumps({'status': 'emptycart'}))
     else:
         return HttpResponse()
+
+
+def ordered_list(request):
+    current_user = ClinicManager.objects.get(user=request.user)
+    order_list = Order.objects.filter(order_clinic=current_user.clinic_name)
+
+    context = {
+        'orders': order_list
+    }
+
+    print(context)
+
+    return render(request, 'clinic_manager/orders.html', context=context)

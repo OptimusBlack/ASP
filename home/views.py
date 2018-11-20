@@ -1,9 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+<<<<<<< HEAD
 from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, RegistrationTokenAfterForm_clinicManager
+=======
+from .forms import RegistrationForm, RegistrationTokenForm, LoginForm
+>>>>>>> master
 from .models import RegistrationToken
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User as UserDjango
 from clinic_manager.models import ClinicManager
+from dispatcher.models import Dispatcher
+from warehouse.models import WarehousePersonnel
 
 
 def index(request):
@@ -11,8 +18,33 @@ def index(request):
     return HttpResponse(render(request, template))
 
 
+def logout_page(request):
+    logout(request)
+    return HttpResponse()
+
+
 def login_page(request):
-    return HttpResponse("Still under development")
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                if ClinicManager.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/clinic_manager/home')
+                elif Dispatcher.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/dispatcher/home')
+                elif WarehousePersonnel.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/warehouse/home')
+
+            else:
+                print("Not authenticated")
+            return HttpResponseRedirect('/')
+
+    else:
+        form = LoginForm()
+
+    return render(request, 'home/login.html', {'form': form})
 
 
 def register(request):
@@ -75,16 +107,22 @@ def register_after_token(request):
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
 
-            authUser = RegistrationToken.objects.get(token=token)
+            auth_user = RegistrationToken.objects.get(token=token)
 
             # Handle user registration to different types here
             # Note that there will be a switch to django.auth required first
 
-            print(authUser)
-            user = User.objects.create_user(username=username, email=authUser.email, password=password, first_name=first_name, last_name=last_name)
-            clinic_manager = ClinicManager(user=user, clinic_name=clinic_name)
-            user.save()
-            clinic_manager.save()
+            user_django = UserDjango.objects.create_user(username=username, email=auth_user.email, password=password,
+                                                         first_name=first_name, last_name=last_name)
+            if auth_user.role == "Clinic Manager":
+                clinic_manager = ClinicManager(user=user_django, clinic_name=clinic_name)
+                clinic_manager.save()
+            elif auth_user.role == "Dispatcher":
+                dispatcher = Dispatcher(user=user_django)
+                dispatcher.save()
+            elif auth_user.role == "Warehouse Personnel":
+                warehouse_personnel = WarehousePersonnel(user=user_django)
+                warehouse_personnel.save()
 
             return HttpResponseRedirect('/')
 

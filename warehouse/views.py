@@ -17,6 +17,7 @@ def index(request):
         order_details.total_weight = round(order_details.total_weight, 2)
         display_view.append(order_details)
 
+    print(request.session['process'])
     context = {
         'orders': display_view,
         'warehouse': request.session['process']
@@ -35,12 +36,11 @@ def do_pop(request):
             d.save()
 
         order_to_process = process_queue[0]
-        order_to_process.delete()
         order_details = Order.objects.get(id=order_to_process.order_id)
         request.session['process'].append({'id': order_details.id, 'total_weight': order_details.total_weight})
         request.session.modified = True
-
-    print("Session after process: ", request.session['dispatch'])
+        order_to_process.delete()
+        print(request.session['process'])
     return HttpResponse()
 
 
