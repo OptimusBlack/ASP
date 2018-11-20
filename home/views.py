@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, RegistrationTokenAfterForm_clinicManager
+from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, RegistrationTokenAfterForm_clinicManager, LoginForm
 from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
@@ -76,10 +76,12 @@ def register_with_token(request):
             # Note that there will be a switch to django.auth required first
 
             if (authUser.role == "Clinic Manager"):
-                return HttpResponseRedirect('/register_after_token?%s' % 'type=0')
+                query = 'type=0&token='+token
+                return HttpResponseRedirect('/register_after_token?%s' % query)
 
             else:
-                return HttpResponseRedirect('/register_after_token?%s' % 'type=1')
+                query = 'type=1&token='+token
+                return HttpResponseRedirect('/register_after_token?%s' % query)
 
             #user = User.objects.create_user(username=username, email=authUser.email, password=password, first_name=first_name, last_name=last_name)
             #clinic_manager = ClinicManager(user=user, clinic_name=clinic_name)
@@ -97,9 +99,9 @@ def register_after_token(request):
         if form.is_valid():
             import uuid
 
+            token = form.data['token']
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            clinic_name = form.cleaned_data['clinic_name']
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
 
@@ -111,6 +113,7 @@ def register_after_token(request):
             user_django = UserDjango.objects.create_user(username=username, email=auth_user.email, password=password,
                                                          first_name=first_name, last_name=last_name)
             if auth_user.role == "Clinic Manager":
+                clinic_name = form.data['clinic_name']
                 clinic_manager = ClinicManager(user=user_django, clinic_name=clinic_name)
                 clinic_manager.save()
             elif auth_user.role == "Dispatcher":
@@ -123,11 +126,12 @@ def register_after_token(request):
             return HttpResponseRedirect('/')
 
     else:
-        print(request.GET['type'])
+        auth_user = RegistrationToken.objects.get(token=request.GET['token'])
+        email = auth_user.email
         if (request.GET['type'] == '0'):
             form = RegistrationTokenAfterForm_clinicManager()
 
         else:
             form = RegistrationTokenAfterForm()
 
-    return render(request, 'home/register_after_token.html', {'form': form})
+    return render(request, 'home/register_after_token.html', {'form': form, 'token': request.GET['token'], 'email': email})

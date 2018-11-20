@@ -7,6 +7,8 @@
     <form action="/register_after_token/" method="post">
         {% csrf_token %}
         {{ form }}
+        Email: {{ email }}
+        <input type="hidden" value="{{ token }}" name="token">
         <input type="submit" value="Submit">
     </form>
 {% endblock %}
