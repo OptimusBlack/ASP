@@ -1,10 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-<<<<<<< HEAD
 from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, RegistrationTokenAfterForm_clinicManager
-=======
-from .forms import RegistrationForm, RegistrationTokenForm, LoginForm
->>>>>>> master
 from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
