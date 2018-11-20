@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import RegistrationForm, RegistrationTokenForm
+from .forms import RegistrationForm, RegistrationTokenForm, LoginForm
 from .models import RegistrationToken
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User as UserDjango
 from clinic_manager.models import ClinicManager
 
 
@@ -11,8 +12,28 @@ def index(request):
     return HttpResponse(render(request, template))
 
 
+def logout_page(request):
+    logout(request)
+    return HttpResponse()
+
+
 def login_page(request):
-    return HttpResponse("Still under development")
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                if ClinicManager.objects.get(user=user) is not None:
+                    return HttpResponseRedirect('/clinic_manager/home')
+            else:
+                print("Not authenticated")
+            return HttpResponseRedirect('/')
+
+    else:
+        form = LoginForm()
+
+    return render(request, 'home/login.html', {'form': form})
 
 
 def register(request):
@@ -52,11 +73,11 @@ def register_with_token(request):
             # Handle user registration to different types here
             # Note that there will be a switch to django.auth required first
 
-            print(authUser)
-            user = User.objects.create_user(username=username, email=authUser.email, password=password, first_name=first_name, last_name=last_name)
-            clinic_manager = ClinicManager(user=user, clinic_name=clinic_name)
-            user.save()
-            clinic_manager.save()
+            user_django = UserDjango.objects.create_user(username=username, email=authUser.email, password=password,
+                                                         first_name=first_name, last_name=last_name)
+            if authUser.role == "Clinic Manager":
+                clinic_manager = ClinicManager(user=user_django, clinic_name=clinic_name)
+                clinic_manager.save()
 
             return HttpResponseRedirect('/')
 
