@@ -33,10 +33,10 @@ def do_pop(request):
             d.save()
 
         order_to_dispatch = dispatch_queue[0]
-        order_to_dispatch.delete()
         order_details = Order.objects.get(id=order_to_dispatch.order_id)
         request.session['dispatch'].append({'id': order_details.id, 'total_weight': order_details.total_weight})
         request.session.modified = True
+        order_to_dispatch.delete()
 
     print("Session after process: ", request.session['dispatch'])
     return HttpResponse()
