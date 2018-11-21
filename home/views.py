@@ -26,15 +26,20 @@ def login_page(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 login(request, user)
-                if ClinicManager.objects.get(user=user) is not None:
-                    return HttpResponseRedirect('/clinic_manager/home')
-                elif Dispatcher.objects.get(user=user) is not None:
-                    return HttpResponseRedirect('/dispatcher/home')
-                elif WarehousePersonnel.objects.get(user=user) is not None:
-                    return HttpResponseRedirect('/warehouse/home')
+                try:
+                    if ClinicManager.objects.get(user=user) is not None:
+                        return HttpResponseRedirect('/clinic_manager/home')
+                except ClinicManager.DoesNotExist:
+                    try:
+                        if Dispatcher.objects.get(user=user) is not None:
+                            return HttpResponseRedirect('/dispatcher/home')
+                    except Dispatcher.DoesNotExist:
+                        try:
+                            if WarehousePersonnel.objects.get(user=user) is not None:
+                                return HttpResponseRedirect('/warehouse/home')
+                        except WarehousePersonnel.DoesNotExist:
+                            print("Not authenticated")
 
-            else:
-                print("Not authenticated")
             return HttpResponseRedirect('/')
 
     else:
@@ -75,7 +80,7 @@ def register_with_token(request):
             # Handle user registration to different types here
             # Note that there will be a switch to django.auth required first
 
-            if (authUser.role == "Clinic Manager"):
+            if authUser.role == "Clinic Manager":
                 query = 'type=0&token='+token
                 return HttpResponseRedirect('/register_after_token?%s' % query)
 
@@ -92,6 +97,7 @@ def register_with_token(request):
         form = RegistrationTokenForm()
 
     return render(request, 'home/register_token.html', {'form': form})
+
 
 def register_after_token(request):
     if request.method == 'POST':
@@ -128,7 +134,8 @@ def register_after_token(request):
     else:
         auth_user = RegistrationToken.objects.get(token=request.GET['token'])
         email = auth_user.email
-        if (request.GET['type'] == '0'):
+
+        if request.GET['type'] == '0':
             form = RegistrationTokenAfterForm_clinicManager()
 
         else:
