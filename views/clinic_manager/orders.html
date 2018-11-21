@@ -10,6 +10,9 @@
         <div class="col-4 offset-4">
             <h4>Hello Clinic Manager</h4>
         </div>
+        <div class="col-2">
+            <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=logout() >Logout</button>
+        </div>
     </div>
 
     <div class="container">
@@ -25,7 +28,7 @@
                                     <h4 class="card-title">
                                         Order Id: {{order.id}}
                                     </h4>
-                                    <h5>Weight per unit: {{ order.total_weight }}</h5>
+                                    <h5>Weight: {{ order.total_weight }}</h5>
                                     <p>Order status: {{ order.order_status }}</p>
                                 </div>
                             </div>
@@ -36,4 +39,5 @@
             </div>
         </div>
     </div>
+    <script src={% static 'clinic_manager/app.js' %}></script>
 {% endblock %}
