@@ -18,6 +18,8 @@ class Item(models.Model):
 
 
 class LocationData(models.Model):
+    def __str__(self):
+        return self.name
     name = models.TextField(default='')
     lat = models.FloatField(default=0.0)
     lng = models.FloatField(default=0.0)

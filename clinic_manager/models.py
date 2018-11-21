@@ -49,4 +49,5 @@ class Order(models.Model):
     priority_level = models.CharField(max_length=200, default='Low')
     order_status = models.TextField()
     order_clinic = models.TextField(default='')
-
+    time_delivered = models.DateTimeField(blank=True, null=True)
+    time_dispatched = models.DateTimeField(blank=True, null=True)

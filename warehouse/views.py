@@ -1,11 +1,12 @@
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
 from .models import ProcessQueue
+from ha.models import Item
 from dispatcher.models import DispatchQueue
 from clinic_manager.models import Order
 from reportlab.pdfgen import canvas
 import io
-
+import json
 
 def index(request):
     process_queue = sorted(ProcessQueue.objects.all(), key=lambda x: x.queue_no)
@@ -55,8 +56,13 @@ def process(request):
             order_object = Order.objects.get(id=order['id'])
             p.drawString(100, i, "Order Number: " + str(order['id']))
             contents = order_object.contents
-            p.drawString(100, i - 50, str(contents))
-            p.drawString(100, i - 100, str(order_object.order_clinic))
+            contents = json.loads(contents)
+            for content in contents['contents']:
+                item_object = Item.objects.get(id=content['product_id'])
+                p.drawString(100, i-50, str(item_object.name) + '; Quantity: ' + content['qty'])
+                i = i - 50
+
+            p.drawString(100, i - 50, str(order_object.order_clinic))
             order_object.order_status = 'Queued for Dispatch'
             order_object.save()
 

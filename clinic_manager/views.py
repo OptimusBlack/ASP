@@ -8,11 +8,13 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from ha.models import Item
 from .models import ClinicManager
 from .models import Order
 from .functions import place_order_for_user
+from .forms import DeliveryNotification
 import json
 
 
@@ -95,3 +97,18 @@ def ordered_list(request):
     print(context)
 
     return render(request, 'clinic_manager/orders.html', context=context)
+
+
+def notify_delivery(request):
+    if request.method == 'POST':
+        form = DeliveryNotification(request.POST)
+        if form.is_valid():
+            order_id = form.cleaned_data['order_id']
+            order_object = Order.objects.get(id=order_id)
+            order_object.time_delivered = timezone.now()
+            order_object.order_status = "Delivered"
+            order_object.save()
+    else:
+        form = DeliveryNotification()
+
+    return render(request, 'clinic_manager/register.html', {'form': form})

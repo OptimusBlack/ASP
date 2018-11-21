@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.utils import timezone
 from .functions import dispatch_order
 from .models import DispatchQueue
 from clinic_manager.models import Order
@@ -48,6 +49,7 @@ def dispatch(request):
         for order in orders_queued:
             order_object = Order.objects.get(id=order['id'])
             order_object.order_status = 'Dispatched'
+            order_object.time_dispatched = timezone.now()
             order_object.save()
 
         response = HttpResponse(content_type='text/csv')
