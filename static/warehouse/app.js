@@ -22,3 +22,16 @@ execute_process = () => {
         }
     });
 };
+
+logout = () => {
+    $.ajax({
+        url: "/logout/",
+        method: "GET",
+        type: "GET",
+        headers:{
+            "X-CSRFToken": '{{csrf_token}}',
+            "Content-type" : 'application/json'
+        },
+    });
+    window.location.replace(`${window.location.origin}/`);
+};
