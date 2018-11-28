@@ -6,3 +6,7 @@
 #welcome-text{
     font-size: 200%;
 }
+
+html, body, .row, .container{
+    height: 100%;
+}
