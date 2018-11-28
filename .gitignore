@@ -18,3 +18,5 @@ ha/migrations/__pycache__/
 home/__pycache__/
 seqdiags/
 db.sqlite3
+.idea/ASP.iml
+.idea/misc.xml
