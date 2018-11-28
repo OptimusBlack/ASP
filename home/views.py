@@ -61,7 +61,7 @@ def register(request):
                 role = form.cleaned_data['role']
                 RegistrationToken(token=token, email=email, role=role).save()
 
-                return HttpResponseRedirect('/')
+                return render(request, 'home/download_token.html', {'token': token, 'role': role})
 
         else:
             form = RegistrationForm()
