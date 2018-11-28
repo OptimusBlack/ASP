@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, RegistrationTokenAfterForm_clinicManager, LoginForm
+from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, \
+    RegistrationTokenAfterForm_clinicManager, LoginForm
 from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
@@ -49,6 +50,12 @@ def login_page(request):
 
 
 def register(request):
+    """
+    Registers a new user with a HA account to a token for a specific role.
+    :param request: request object
+    :return: registration form if GET. Redirect on form submission
+    """
+
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -68,6 +75,11 @@ def register(request):
 
 
 def register_with_token(request):
+    """
+    Register user informtion after receiving the token.
+    :param request: request object
+    :return: POST request: redirect to a specific user registration page; GET request: form
+    """
     if request.method == 'POST':
         form = RegistrationTokenForm(request.POST)
         if form.is_valid():
@@ -94,6 +106,11 @@ def register_with_token(request):
 
 
 def register_after_token(request):
+    """
+    Input user details once the token has been input by the user.
+    :param request: request object
+    :return: GET: User specific registration. POST: Redirect to home page.
+    """
     if request.method == 'POST':
         form = RegistrationTokenAfterForm(request.POST)
         if form.is_valid():

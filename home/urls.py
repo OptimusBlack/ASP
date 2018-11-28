@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.contrib.auth.views import PasswordChangeView, LoginView
 from . import views
 
 urlpatterns = [
@@ -8,5 +8,6 @@ urlpatterns = [
     path('logout/', views.logout_page, name="logout"),
     path('register/', views.register, name='register'),
     path('register_token/', views.register_with_token, name='register_token'),
-    path('register_after_token/', views.register_after_token, name='register_after_token')
+    path('register_after_token/', views.register_after_token, name='register_after_token'),
+    path('change_password/', PasswordChangeView.as_view(), name='change_password')
 ]
