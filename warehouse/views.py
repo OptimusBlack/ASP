@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 import io
 import json
 
+
 def index(request):
     process_queue = sorted(ProcessQueue.objects.all(), key=lambda x: x.queue_no)
     display_view = []
