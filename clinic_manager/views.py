@@ -151,20 +151,6 @@ def cancel_order(request):
             except ProcessQueue.DoesNotExist:
                 pass
 
-            try:
-                if DispatchQueue.objects.get(order_id=order_id):
-                    # Delete if in dispatch queue
-                    dispatch_queue_object = DispatchQueue.objects.get(order_id=order_id)
-                    dispatch_queue_object.delete()
-                    current_dispatch_queue = sorted(DispatchQueue.objects.all(), key=lambda x: x.queue_number)
-                    i = 1
-                    for contents in current_dispatch_queue:
-                        contents.queue_number = i
-                        contents.save()
-                        i += 1
-
-            except DispatchQueue.DoesNotExist:
-                pass
-
             order_object.delete()
+
     return HttpResponse()
