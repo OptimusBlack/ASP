@@ -135,6 +135,8 @@ def cancel_order(request):
         req_obj = json.loads(request.body.decode('utf-8'))
         order_id = req_obj['order_id']
         order_object = Order.objects.get(id=order_id)
+
+        # Delete only if the order is queued for processing
         if order_object.order_status == "Queued for Processing":
             try:
                 if ProcessQueue.objects.get(order_id=order_id):
