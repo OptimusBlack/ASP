@@ -44,8 +44,32 @@
                                                 <h4 class="card-title">
                                                     Order Id: {{order.id}}
                                                 </h4>
-                                                <h5>Weight: {{ order.total_weight }}</h5>
-                                                <p>Order status: {{ order.order_status }}</p>
+                                                <h4>Contents:</h4>
+                                                {% for item in order.contents %}
+                                                    <p>{{ item.name }} : {{ item.qty }} units</p>
+                                                {% endfor %}
+                                                <h5>Weight: {{ order.total_weight }} kg.</h5>
+                                                <h5>Order status: {{ order.order_status }}</h5>
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="d-flex">
+                                                            {% if order.order_status == "Queued for Processing" %}
+                                                                <button class="btn btn-secondary btn-lg btn-block order-button" id="cancel-{{order.id}}" onClick=cancelOrder(this)>Cancel Order</button>
+                                                            {% else %}
+                                                                <button class="btn btn-secondary btn-lg btn-block order-button" id="cancel-{{order.id}}" onClick=cancelOrder(this) disabled>Cancel Order</button>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            {% if order.order_status == "Dispatched" %}
+                                                                <button class="btn btn-secondary btn-lg btn-block order-button" id="confirm-{{order.id}}" onClick=notifyDelivery(this)>Confirm Delivery</button>
+                                                            {% else %}
+                                                                <button class="btn btn-secondary btn-lg btn-block order-button" id="confirm-{{order.id}}" onClick=notifyDelivery(this) disabled>Confirm Delivery</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
