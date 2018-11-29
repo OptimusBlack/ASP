@@ -60,6 +60,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ASP.urls'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LOGIN_URL = '/login/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

@@ -85,3 +85,47 @@ $(document).ready(function () {
        console.log(priority);
     });
 });
+
+notifyDelivery = (e) =>{
+    /**
+     * Cancel an order
+     * @type {object}  e.id gives "cancel-<id>
+     */
+
+    let order_id = parseInt(e.id.substring(8));
+    $.ajax({
+        url: "/clinic_manager/notify_delivery/",
+        method: "POST",
+        type: "POST",
+        dataType: "json",
+        data: JSON.stringify({'order_id' : order_id}),
+        headers:{
+            "X-CSRFToken": '{{csrf_token}}',
+            "Content-type" : 'application/json'
+        },
+    });
+
+    console.log("Delivery Notified");
+};
+
+cancelOrder = (e) =>{
+    /**
+     * Cancel an order
+     * @type {object}  e.id gives "cancel-<id>
+     */
+
+    let order_id = parseInt(e.id.substring(7));
+    $.ajax({
+        url: "/clinic_manager/cancel_order/",
+        method: "POST",
+        type: "POST",
+        dataType: "json",
+        data: JSON.stringify({'order_id' : order_id}),
+        headers:{
+            "X-CSRFToken": '{{csrf_token}}',
+            "Content-type" : 'application/json'
+        },
+    });
+
+    console.log("Order Cancelled");
+};
