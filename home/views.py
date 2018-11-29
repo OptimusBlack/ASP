@@ -11,16 +11,31 @@ from warehouse.models import WarehousePersonnel
 
 
 def index(request):
+    """
+    Home page for site
+    :param request:
+    :return:
+    """
     template = 'home/index.html'
     return HttpResponse(render(request, template))
 
 
 def logout_page(request):
+    """
+    Logout the current user
+    :param request:
+    :return:
+    """
     logout(request)
     return HttpResponse()
 
 
 def login_page(request):
+    """
+    Display the login page for the user
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():

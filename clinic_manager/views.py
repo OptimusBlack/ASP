@@ -14,7 +14,6 @@ from ha.models import Item
 from .models import ClinicManager
 from .models import Order
 from warehouse.models import ProcessQueue
-from dispatcher.models import DispatchQueue
 from .functions import place_order_for_user
 import json
 
