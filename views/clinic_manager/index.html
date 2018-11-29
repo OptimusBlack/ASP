@@ -4,54 +4,76 @@
     <link rel="stylesheet" type="text/css" href="{% static 'clinic_manager/style.css'%}">
 {% endblock %}
 {% block page %}
-    <div class="row" id="heading">
-        <div class="col-4">
+    <div class="row d-flex" id="heading">
+        <div class="mr-auto">
             <h1>AS-P</h1>
         </div>
-        <div class="offset-4 col-2">
-            <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=placeOrder() >Checkout</button>
+        <div class="p-2">
             <input id='priority' type="text" class="form-control" aria-label="Priority" aria-describedby="inputGroup-sizing-default" placeholder="Priority">
         </div>
-        <div class="col-2">
+        <div class="p-2">
+            <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=placeOrder() >Checkout</button>
+        </div>
+        <div class="p-2">
             <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=logout() >Logout</button>
         </div>
     </div>
 
-    <div class="container">
+    <div class="pure-container" data-effect="pure-effect-slide">
+        <input type="checkbox" id="pure-toggle-right" class="pure-toggle" data-toggle="right">
+        <label class="pure-toggle-label" for="pure-toggle-right" data-toggle-label="right">
+            <span class="pure-toggle-icon"></span>
+        </label>
 
-        <div class="row">
-
-            <div class="col-lg-12">
-
-                <div class="row">
-                    {% for product in products %}
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" alt="" src={{ product.image.url }} ></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">{{ product.name }}</a>
-                                    </h4>
-                                    <p>{{ product.description }}</p>
-                                    <h5>Weight per unit: {{ product.weight }}</h5>
-                                    <h5>Category: {{ product.category }}</h5>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <input id='qty{{ product.id }}' type="text" class="form-control quantity_input" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" placeholder="Quantity">
+        <div class="pure-drawer" data-position="right">
+            <div class="row">
+                    <div class="col-12">
+                        <ul class="nav-primary">
+                            <li class="side-menu-options"><a href="/change_user_details/">Change User Info</a></li>
+                            <li class="side-menu-options"><a href="/change_password">Change User Password</a></li>
+                            <li class="side-menu-options"><a href="/clinic_manager/orders/">View Orders</a></li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+        <div class="pure-pusher-container">
+            <div class="pure-pusher">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                {% for product in products %}
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <a href="#"><img class="card-img-top" alt="" src={{ product.image.url }} ></a>
+                                            <div class="card-body">
+                                                <h4 class="card-title">
+                                                    <a href="#">{{ product.name }}</a>
+                                                </h4>
+                                                <p>{{ product.description }}</p>
+                                                <h5>Weight per unit: {{ product.weight }}</h5>
+                                                <h5>Category: {{ product.category }}</h5>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <input id='qty{{ product.id }}' type="text" class="form-control quantity_input" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" placeholder="Quantity">
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button class="btn btn-secondary btn-lg btn-block order-button" onClick=addToCart({{ product.id }})>Add to cart</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-secondary btn-lg btn-block order-button" onClick=addToCart({{ product.id }})>Add to cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                                {% endfor %}
 
-                </div><!-- /.row -->
+                            </div><!-- /.row -->
 
-            </div>            <!-- /.col-lg-12 -->
+                        </div>            <!-- /.col-lg-12 -->
 
-        </div>        <!-- /.row -->
+                    </div>        <!-- /.row -->
 
-    </div>    <!-- /.container -->
+                </div>    <!-- /.container -->
+            </div>
+        </div>
+        <label class="pure-overlay" for="pure-toggle-left" data-overlay="left"></label>
+    </div>
     <script src={% static 'clinic_manager/app.js' %}></script>
 {% endblock %}

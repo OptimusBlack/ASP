@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAfterForm, \
-    RegistrationTokenAfterForm_clinicManager, LoginForm
+    RegistrationTokenAfterForm_clinicManager, LoginForm, ChangeInfoForm
 from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
@@ -153,3 +153,42 @@ def register_after_token(request):
             form = RegistrationTokenAfterForm()
 
     return render(request, 'home/register_after_token.html', {'form': form, 'token': request.GET['token'], 'email': email})
+
+
+def change_info(request):
+    """
+    Change user info: first_name, last_name and email.
+    :param request: request object
+    :return: If logged in
+    """
+    if request.user.is_authenticated:
+        user_info = request.user
+        if request.method == 'POST':
+            form = ChangeInfoForm(request.POST)
+            if form.is_valid():
+
+                # Get the user object with the same email address
+                user = UserDjango.objects.get(email=user_info.email)
+                # Update user details
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.email = form.cleaned_data['email']
+                user.save()
+
+                try:
+                    if ClinicManager.objects.get(user=user) is not None:
+                        return HttpResponseRedirect('/clinic_manager/home')
+                except ClinicManager.DoesNotExist:
+                    try:
+                        if Dispatcher.objects.get(user=user) is not None:
+                            return HttpResponseRedirect('/dispatcher/home')
+                    except Dispatcher.DoesNotExist:
+                        if WarehousePersonnel.objects.get(user=user) is not None:
+                            return HttpResponseRedirect('/warehouse/home')
+
+        else:
+            form = ChangeInfoForm(initial={'first_name': user_info.first_name, 'last_name': user_info.last_name, 'email': user_info.email})
+            return render(request, 'home/change_info.html', {'form': form})
+
+    else:
+        return HttpResponseRedirect('/')

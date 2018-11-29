@@ -28,3 +28,9 @@ class RegistrationTokenAfterForm_clinicManager(forms.Form):
     first_name = forms.CharField(max_length=100)
     last_name = forms.CharField(max_length=100)
     clinic_name = forms.CharField(max_length=300)
+
+
+class ChangeInfoForm(forms.Form):
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    email = forms.CharField(max_length=200)
