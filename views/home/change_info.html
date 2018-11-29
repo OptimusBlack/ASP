@@ -6,7 +6,7 @@
 {% block page %}
     <div class="row d-flex justify-content-center align-items-center">
         <div class="d-flex justify-content-center">
-            <form action="/change_password/" method="post">
+            <form action="/change_user_details/" method="post">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
 
