@@ -7,79 +7,99 @@ from clinic_manager.models import Order
 from reportlab.pdfgen import canvas
 import io
 import json
-
+from ASP.global_functions import update_process_queue, update_dispatch_queue
 
 def index(request):
-    process_queue = sorted(ProcessQueue.objects.all(), key=lambda x: x.queue_no)
-    display_view = []
-    if 'process' not in request.session:
-        request.session['process'] = []
-    for d in process_queue:
-        order_details = Order.objects.get(id=d.order_id)
-        order_details.total_weight = round(order_details.total_weight, 2)
-        display_view.append(order_details)
+    update_process_queue()
+    update_dispatch_queue()
+    process_queue_top = ProcessQueue.objects.filter(queue_no = 0)
 
-    print(request.session['process'])
+    order_details = None
+    if (len(process_queue_top) >= 1):
+        if 'process' not in request.session:
+            request.session['process'] = []
+
+        order_details = Order.objects.get(id=process_queue_top[0].order_id)
+        order_details.total_weight = round(order_details.total_weight, 2)
+        order_details.content_details = []
+
+        order_contents = json.loads(order_details.contents)['contents']
+        for cont in order_contents:
+            item = Item.objects.get(id=cont['product_id'])
+            item.qty = cont['qty']
+            order_details.content_details.append(item)
+
+
+    order_in_process = Order.objects.filter(order_status='Processing by Warehouse')
+    print(order_in_process)
+    order_warehouse = None
+
+    if (len(order_in_process) > 0):
+        for order in order_in_process:
+            order.content_details = []
+            order_contents = json.loads(order.contents)['contents']
+            for cont in order_contents:
+                item = Item.objects.get(id=cont['product_id'])
+                item.qty = cont['qty']
+                order.content_details.append(item)
+        order_warehouse = order_in_process[0]
+
+
     context = {
-        'orders': display_view,
-        'warehouse': request.session['process']
+        'order': order_details,
+        'warehouse': order_warehouse
     }
     return render(request, 'warehouse/index.html', context=context)
 
 
 def do_pop(request):
-    process_queue = sorted(ProcessQueue.objects.all(), key=lambda x: x.queue_no)
-    if len(process_queue) > 0:
-        for d in process_queue:
-            d.queue_no = d.queue_no - 1
-            order_object = Order.objects.get(id=d.order_id)
-            order_object.order_status = 'Processing by Warehouse'
-            order_object.save()
-            d.save()
+    processing_orders = Order.objects.filter(order_status='Processing by Warehouse')
+    if len(processing_orders) > 0:
+        return HttpResponse(json.dumps({'msg': 1}))
 
-        order_to_process = process_queue[0]
-        order_details = Order.objects.get(id=order_to_process.order_id)
-        request.session['process'].append({'id': order_details.id, 'total_weight': order_details.total_weight})
-        request.session.modified = True
-        order_to_process.delete()
-        print(request.session['process'])
-    return HttpResponse()
+    process_queue_top = ProcessQueue.objects.get(queue_no=0)
+    order = Order.objects.get(id=process_queue_top.order_id)
+
+    order.order_status = 'Processing by Warehouse'
+    order.save()
+
+    request.session['process'].append({'id': order.id, 'total_weight': order.total_weight})
+    request.session.modified = True
+
+    update_process_queue()
+
+    print(request.session['process'])
+    return HttpResponse(json.dumps({'msg': 0}))
 
 
 def process(request):
-    orders_queued = request.session['process']
+    order_object = Order.objects.filter(order_status='Processing by Warehouse')
+    if (len(order_object) < 1):
+        return HttpResponse("0")
+
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer)
     p.drawString(100, 750, 'AS-P')
     i = 650
-    if len(orders_queued) > 0:
-        for order in orders_queued:
-            order_object = Order.objects.get(id=order['id'])
-            p.drawString(100, i, "Order Number: " + str(order['id']))
-            contents = order_object.contents
-            contents = json.loads(contents)
-            for content in contents['contents']:
-                item_object = Item.objects.get(id=content['product_id'])
-                p.drawString(100, i-50, str(item_object.name) + '; Quantity: ' + content['qty'])
-                i = i - 50
 
-            p.drawString(100, i - 50, str(order_object.order_clinic))
-            order_object.order_status = 'Queued for Dispatch'
-            order_object.save()
+    for order in order_object:
+        p.drawString(100, i, "Order Number: " + str(order.id))
+        contents = order.contents
+        contents = json.loads(contents)
+        for content in contents['contents']:
+            item_object = Item.objects.get(id=content['product_id'])
+            p.drawString(100, i-50, str(item_object.name) + '; Quantity: ' + str(content['qty']))
+            i = i - 50
 
-            # Add to Dispatch Queue
-            current_dispatch_queue = sorted(DispatchQueue.objects.all(), key=lambda x: x.queue_number)
-            if len(current_dispatch_queue) == 0:
-                new_queue_no = 1
-            else:
-                last_in_queue = current_dispatch_queue[len(current_dispatch_queue) - 1]
-                new_queue_no = last_in_queue.queue_number + 1
+        p.drawString(100, i - 50, str(order.order_clinic))
+        order.order_status = 'Queued for Dispatch'
+        order.save()
 
-            d = DispatchQueue()
-            d.queue_number = new_queue_no
-            d.order_id = order['id']
-            d.save()
-        request.session['process'] = []
+    print('Queued for Dispatch...')
+    update_dispatch_queue()
+
+    request.session['process'] = []
+    request.session.modified = True
 
     p.showPage()
     p.save()

@@ -16,7 +16,7 @@ from .models import Order
 from warehouse.models import ProcessQueue
 from .functions import place_order_for_user
 import json
-
+from ASP.global_functions import update_dispatch_queue,update_process_queue
 
 def index(request):
     """
@@ -104,7 +104,7 @@ def show_cart(request):
         product['description'] = cartItem.description
         product['image'] = cartItem.image
         product['qty'] = item['qty']
-        product['total_weight'] = cartItem.weight_per_unit * item['qty']
+        product['total_weight'] = round(cartItem.weight_per_unit * item['qty'], 2)
         itemsInCart.append(product)
 
     print(itemsInCart)
@@ -122,14 +122,22 @@ def place_order(request):
                 request.session['cart'] = []
                 request.session['total_weight'] = 0
                 request.session.modified = True
+                update_process_queue()
+                update_dispatch_queue()
                 return HttpResponse(json.dumps({'status': 'success'}))
             else:
                 request.session['cart'] = []
                 request.session['total_weight'] = 0
+                update_process_queue()
+                update_dispatch_queue()
                 return HttpResponse(json.dumps({'status': 'overweight'}))
         else:
+            update_process_queue()
+            update_dispatch_queue()
             return HttpResponse(json.dumps({'status': 'emptycart'}))
     else:
+        update_process_queue()
+        update_dispatch_queue()
         return HttpResponse()
 
 
@@ -172,6 +180,8 @@ def notify_delivery(request):
         order_object.order_status = "Delivered"
         order_object.save()
 
+    update_process_queue()
+    update_dispatch_queue()
     return HttpResponse()
 
 
@@ -201,4 +211,6 @@ def cancel_order(request):
 
             order_object.delete()
 
+    update_process_queue()
+    update_dispatch_queue()
     return HttpResponse()

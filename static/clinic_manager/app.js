@@ -81,7 +81,7 @@ logout = () => {
 $(document).ready(function () {
     $('.dropdown-item').click(function () {
        priority = $(this).attr('value');
-       $('#dropdownMenuButton').html(priority.toUpperCase());
+       $('#dropdownMenuButton').html($(this).html().toUpperCase());
        console.log(priority);
     });
 });
