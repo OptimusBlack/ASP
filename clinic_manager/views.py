@@ -16,7 +16,7 @@ from .models import Order
 from warehouse.models import ProcessQueue
 from .functions import place_order_for_user
 import json
-
+from ASP.global_functions import update_dispatch_queue,update_process_queue
 
 def index(request):
     """
@@ -27,6 +27,7 @@ def index(request):
 
     current_user = ClinicManager.objects.get(user=request.user)
     request.session['cart'] = []
+    request.session['total_weight'] = 0
     request.session['clinic'] = current_user.clinic_name
 
     stock_available = Item.objects.all()
@@ -60,11 +61,55 @@ def add_to_cart(request):
         """
         Using sessions to manage the cart
         """
-        request.session['cart'].append(req)
-        request.session.modified = True
-        print(request.session['cart'])
-        return HttpResponse("Done")
+        exists = False
 
+        req['product_id'] = int(req['product_id'])
+        req['qty'] = int(req['qty'])
+
+        item = Item.objects.get(id = req['product_id'])
+        weight = request.session['total_weight'] + (item.weight_per_unit * req['qty'])
+
+        if (weight < 23.8):
+            request.session['total_weight'] += item.weight_per_unit * req['qty']
+            for product in request.session['cart']:
+                if (product['product_id'] == req['product_id']):
+                    product['qty'] = product['qty'] + req['qty']
+                    exists = True
+
+            if (not exists):
+                request.session['cart'].append(req)
+
+            request.session.modified = True
+            print(request.session['cart'])
+            return HttpResponse(json.dumps({'msg': 'done'}))
+
+        else:
+            return HttpResponse(json.dumps({'msg': 'overweight'}))
+
+@csrf_exempt
+def show_cart(request):
+    itemsInCart = []
+    emptyCart = False
+
+    if (len(request.session['cart']) == 0):
+        emptyCart = True
+
+    for item in request.session['cart']:
+        product = {}
+        cartItem = Item.objects.get(id = item['product_id'])
+        product['id'] = cartItem.id
+        product['name'] = cartItem.name
+        product['weight'] = cartItem.weight_per_unit
+        product['category'] = cartItem.category
+        product['description'] = cartItem.description
+        product['image'] = cartItem.image
+        product['qty'] = item['qty']
+        product['total_weight'] = round(cartItem.weight_per_unit * item['qty'], 2)
+        itemsInCart.append(product)
+
+    print(itemsInCart)
+
+    return render(request, 'clinic_manager/checkout.html', {'items': itemsInCart, 'emptyCart': emptyCart})
 
 @csrf_exempt
 def place_order(request):
@@ -75,14 +120,24 @@ def place_order(request):
             if place_order_for_user(request.session['cart'], request.session['clinic'], req['priority']):
 
                 request.session['cart'] = []
+                request.session['total_weight'] = 0
                 request.session.modified = True
+                update_process_queue()
+                update_dispatch_queue()
                 return HttpResponse(json.dumps({'status': 'success'}))
             else:
                 request.session['cart'] = []
+                request.session['total_weight'] = 0
+                update_process_queue()
+                update_dispatch_queue()
                 return HttpResponse(json.dumps({'status': 'overweight'}))
         else:
+            update_process_queue()
+            update_dispatch_queue()
             return HttpResponse(json.dumps({'status': 'emptycart'}))
     else:
+        update_process_queue()
+        update_dispatch_queue()
         return HttpResponse()
 
 
@@ -125,6 +180,8 @@ def notify_delivery(request):
         order_object.order_status = "Delivered"
         order_object.save()
 
+    update_process_queue()
+    update_dispatch_queue()
     return HttpResponse()
 
 
@@ -154,4 +211,6 @@ def cancel_order(request):
 
             order_object.delete()
 
+    update_process_queue()
+    update_dispatch_queue()
     return HttpResponse()

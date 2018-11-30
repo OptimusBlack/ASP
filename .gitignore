@@ -20,3 +20,4 @@ seqdiags/
 db.sqlite3
 .idea/ASP.iml
 .idea/misc.xml
+__pycache__/

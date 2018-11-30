@@ -2,9 +2,9 @@ import json
 from .models import Order
 from ha.models import Item
 from warehouse.models import ProcessQueue
+from ASP.global_functions import update_process_queue
 
-
-def place_order_for_user(cart, clinic, priority='Low'):
+def place_order_for_user(cart, clinic, priority=2):
     permissible_weight = 23.5
     total_weight = 0
     new_order = Order()
@@ -21,20 +21,9 @@ def place_order_for_user(cart, clinic, priority='Low'):
 
     if total_weight > permissible_weight:
         return False
-    new_order.priority_level = priority
+    new_order.priority_level = int(priority)
     new_order.create_order(clinic)
 
-    p = ProcessQueue()
-    p.order_id = new_order.id
-    current_process_queue = sorted(ProcessQueue.objects.all(), key=lambda x: x.queue_no)
-    if len(current_process_queue) == 0:
-        new_queue_no = 1
-    else:
-        last_in_queue = current_process_queue[len(current_process_queue) - 1]
-        new_queue_no = last_in_queue.queue_no + 1
-
-    p.queue_no = new_queue_no
-    print(p)
-    p.save()
+    update_process_queue()
 
     return True

@@ -65,28 +65,26 @@ def login_page(request):
 
 
 def register(request):
-    """
-    Registers a new user with a HA account to a token for a specific role.
-    :param request: request object
-    :return: registration form if GET. Redirect on form submission
-    """
+    if (request.user.is_superuser):
+        print(request.user.is_superuser)
+        if request.method == 'POST':
+            form = RegistrationForm(request.POST)
+            if form.is_valid():
+                import uuid
 
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            import uuid
+                token = str(uuid.uuid1())
+                email = form.cleaned_data['email']
+                role = form.cleaned_data['role']
+                RegistrationToken(token=token, email=email, role=role).save()
 
-            token = str(uuid.uuid1())
-            email = form.cleaned_data['email']
-            role = form.cleaned_data['role']
-            RegistrationToken(token=token, email=email, role=role).save()
+                return render(request, 'home/download_token.html', {'token': token, 'role': role})
 
-            return HttpResponseRedirect('/')
+        else:
+            form = RegistrationForm()
 
+        return render(request, 'home/register.html', {'form': form})
     else:
-        form = RegistrationForm()
-
-    return render(request, 'home/register.html', {'form': form})
+        return HttpResponseRedirect('/admin')
 
 
 def register_with_token(request):

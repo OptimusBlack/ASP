@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block headers %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
+{% endblock %}
+{% block page %}
+    <script>
+        $(document).ready(function () {
+            download('The token for {{ role }} is: {{ token }}', 'email_token.txt');
+            setTimeout(function() {
+                $(location).attr('href', 'http://' + window.location.hostname + ':' + window.location.port);
+            }, 2000);
+        })
+    </script>
+{% endblock %}
