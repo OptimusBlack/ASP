@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
-from .functions import dispatch_order
+from django.core.mail import send_mail
 from ha.models import Item
 from .models import DispatchQueue, Dispatcher
-from clinic_manager.models import Order
+from clinic_manager.models import Order, ClinicManager
 from ha.models import LocationData
 from ASP.global_functions import update_dispatch_queue, update_process_queue
 import json
@@ -12,12 +12,17 @@ import json
 
 def index(request):
     Dispatcher.objects.get(user=request.user)
+    """
+    Render the Dispatcher home page.
+    :param request:
+    :return: Render template
+    """
     update_process_queue()
     update_dispatch_queue()
 
     dispatch_queue = DispatchQueue.objects.all().order_by('queue_number')
 
-    if (len(dispatch_queue) < 1):
+    if len(dispatch_queue) < 1:
         return render(request, 'dispatcher/index.html')
 
     if 'dispatch' not in request.session:
@@ -70,10 +75,18 @@ def index(request):
 
 def dispatch(request):
     Dispatcher.objects.get(user=request.user)
+    """
+    Dispatch an order
+    The function will:
+        dispatch the order that can be contained in the next shipment
+        send email to the clinic manager for each order within the shipment, as a notification.
+    :param request:
+    :return: CSV file as a response.
+    """
     import csv
     orders_to_dispatch = DispatchQueue.objects.all().order_by('queue_number')
 
-    if (len(orders_to_dispatch) < 1):
+    if len(orders_to_dispatch) < 1:
         return HttpResponse("0")
 
     orders = []
@@ -94,6 +107,15 @@ def dispatch(request):
         order_object.time_dispatched = timezone.now()
         order_object.save()
 
+        clinic_manager_email = (ClinicManager.objects.get(clinic_name= order_object.order_clinic)).user.email
+
+        send_mail(
+            'Order Dispatched',
+            'Your order with order number: ' + str(order_object.id) + ' has been dispatched from the hospital.',
+            'ha@example.com',
+            [clinic_manager_email]
+        )
+
     update_dispatch_queue()
 
     response = HttpResponse(content_type='text/csv')
@@ -104,7 +126,6 @@ def dispatch(request):
         location_data = LocationData.objects.get(name=order.order_clinic)
         writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     location_data = LocationData.objects.get(name='Queen Mary Hospital Drone Port')
-    writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     request.session['dispatch'] = []
     return response
