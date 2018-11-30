@@ -6,7 +6,7 @@ from ha.models import Item
 from .models import DispatchQueue
 from clinic_manager.models import Order, ClinicManager
 from ha.models import LocationData
-from ASP.global_functions import update_dispatch_queue, update_process_queue
+from ASP.global_functions import update_dispatch_queue, update_process_queue, route_plan
 import json
 
 
@@ -47,8 +47,7 @@ def index(request):
 
         orders.append(order_details)
 
-    print("DispatchQueue:", request.session['dispatch'])
-
+    route_plan(orders)
     context = {
         'orders': orders
     }
@@ -114,16 +113,23 @@ def dispatch(request):
             [clinic_manager_email]
         )
 
+    csv_route = route_plan(orders)
+
     update_dispatch_queue()
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="download.csv"'
 
     writer = csv.writer(response)
-    for order in orders:
-        location_data = LocationData.objects.get(name=order.order_clinic)
+    for destination in csv_route:
+        location_data = LocationData.objects.get(name=destination)
         writer.writerow([location_data.lat, location_data.lng, location_data.alt])
-    location_data = LocationData.objects.get(name='Queen Mary Hospital Drone Port')
-    writer.writerow([location_data.lat, location_data.lng, location_data.alt])
+
+    # for order in orders:
+    #     location_data = LocationData.objects.get(name=order.order_clinic)
+    #     writer.writerow([location_data.lat, location_data.lng, location_data.alt])
+
+    # location_data = LocationData.objects.get(name='Queen Mary Hospital Drone Port')
+    # writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     request.session['dispatch'] = []
     return response
