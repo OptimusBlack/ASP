@@ -113,6 +113,5 @@ def dispatch(request):
         writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     location_data = LocationData.objects.get(name='Queen Mary Hospital Drone Port')
     writer.writerow([location_data.lat, location_data.lng, location_data.alt])
-    writer.writerow([location_data.lat, location_data.lng, location_data.alt])
     request.session['dispatch'] = []
     return response
