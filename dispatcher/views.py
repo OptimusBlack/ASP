@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
 from django.core.mail import send_mail
-from .functions import dispatch_order
 from ha.models import Item
 from .models import DispatchQueue
 from clinic_manager.models import Order, ClinicManager
@@ -17,7 +16,7 @@ def index(request):
 
     dispatch_queue = DispatchQueue.objects.all().order_by('queue_number')
 
-    if (len(dispatch_queue) < 1):
+    if len(dispatch_queue) < 1:
         return render(request, 'dispatcher/index.html')
 
     if 'dispatch' not in request.session:
