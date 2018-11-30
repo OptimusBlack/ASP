@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from .functions import dispatch_order
 from ha.models import Item
-from .models import DispatchQueue
+from .models import DispatchQueue, Dispatcher
 from clinic_manager.models import Order
 from ha.models import LocationData
 from ASP.global_functions import update_dispatch_queue, update_process_queue
@@ -11,6 +11,7 @@ import json
 
 
 def index(request):
+    Dispatcher.objects.get(user=request.user)
     update_process_queue()
     update_dispatch_queue()
 
@@ -68,6 +69,7 @@ def index(request):
 
 
 def dispatch(request):
+    Dispatcher.objects.get(user=request.user)
     import csv
     orders_to_dispatch = DispatchQueue.objects.all().order_by('queue_number')
 

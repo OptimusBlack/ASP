@@ -1,6 +1,6 @@
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
-from .models import ProcessQueue
+from .models import ProcessQueue, WarehousePersonnel
 from ha.models import Item
 from dispatcher.models import DispatchQueue
 from clinic_manager.models import Order
@@ -10,6 +10,7 @@ import json
 from ASP.global_functions import update_process_queue, update_dispatch_queue
 
 def index(request):
+    WarehousePersonnel.objects.get(user=request.user)
     update_process_queue()
     update_dispatch_queue()
     process_queue_top = ProcessQueue.objects.filter(queue_no = 0)
@@ -53,6 +54,7 @@ def index(request):
 
 
 def do_pop(request):
+    WarehousePersonnel.objects.get(user=request.user)
     processing_orders = Order.objects.filter(order_status='Processing by Warehouse')
     if len(processing_orders) > 0:
         return HttpResponse(json.dumps({'msg': 1}))
@@ -73,6 +75,7 @@ def do_pop(request):
 
 
 def process(request):
+    WarehousePersonnel.objects.get(user=request.user)
     order_object = Order.objects.filter(order_status='Processing by Warehouse')
     if (len(order_object) < 1):
         return HttpResponse("0")

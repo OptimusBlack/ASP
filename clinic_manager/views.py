@@ -56,6 +56,7 @@ def index(request):
 
 @csrf_exempt
 def add_to_cart(request):
+    ClinicManager.objects.get(user=request.user)
     if request.method == 'POST':
         req = json.loads(request.body.decode('utf-8'))
         """
@@ -88,6 +89,7 @@ def add_to_cart(request):
 
 @csrf_exempt
 def show_cart(request):
+    ClinicManager.objects.get(user=request.user)
     itemsInCart = []
     emptyCart = False
 
@@ -113,6 +115,7 @@ def show_cart(request):
 
 @csrf_exempt
 def place_order(request):
+    ClinicManager.objects.get(user=request.user)
     if request.method == 'POST':
         req = json.loads(request.body.decode('utf-8'))
         print(req)
@@ -172,6 +175,7 @@ def ordered_list(request):
 
 @csrf_exempt
 def notify_delivery(request):
+    ClinicManager.objects.get(user=request.user)
     if request.method == 'POST':
         req_obj = json.loads(request.body.decode('utf-8'))
         order_id = req_obj['order_id']
@@ -187,6 +191,7 @@ def notify_delivery(request):
 
 @csrf_exempt
 def cancel_order(request):
+    ClinicManager.objects.get(user=request.user)
     if request.method == 'POST':
         req_obj = json.loads(request.body.decode('utf-8'))
         order_id = req_obj['order_id']
