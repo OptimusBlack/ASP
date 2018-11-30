@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
+from django.core.mail import send_mail
 from .functions import dispatch_order
 from ha.models import Item
 from .models import DispatchQueue
-from clinic_manager.models import Order
+from clinic_manager.models import Order, ClinicManager
 from ha.models import LocationData
 from ASP.global_functions import update_dispatch_queue, update_process_queue
 import json
@@ -71,7 +72,7 @@ def dispatch(request):
     import csv
     orders_to_dispatch = DispatchQueue.objects.all().order_by('queue_number')
 
-    if (len(orders_to_dispatch) < 1):
+    if len(orders_to_dispatch) < 1:
         return HttpResponse("0")
 
     orders = []
@@ -91,6 +92,15 @@ def dispatch(request):
         order_object.order_status = 'Dispatched'
         order_object.time_dispatched = timezone.now()
         order_object.save()
+
+        clinic_manager_email = (ClinicManager.objects.get(clinic_name= order_object.order_clinic)).user.email
+
+        send_mail(
+            'Order Dispatched',
+            'Your order with order number: ' + str(order_object.id) + ' has been dispatched from the hospital.',
+            'ha@example.com',
+            [clinic_manager_email]
+        )
 
     update_dispatch_queue()
 
