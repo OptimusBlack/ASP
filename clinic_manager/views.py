@@ -146,7 +146,7 @@ def place_order(request):
 
 def ordered_list(request):
     current_user = ClinicManager.objects.get(user=request.user)
-    order_list = Order.objects.filter(order_clinic=current_user.clinic_name)
+    order_list = Order.objects.filter(order_clinic=current_user.clinic_name).exclude(order_status='Delivered')
     my_order_list = []
     for list_item in order_list:
         order_contents = json.loads(list_item.contents)
@@ -186,7 +186,7 @@ def notify_delivery(request):
 
     update_process_queue()
     update_dispatch_queue()
-    return HttpResponse()
+    return HttpResponse("")
 
 
 @csrf_exempt
@@ -218,4 +218,4 @@ def cancel_order(request):
 
     update_process_queue()
     update_dispatch_queue()
-    return HttpResponse()
+    return HttpResponse("")
