@@ -11,6 +11,11 @@ import json
 
 
 def index(request):
+    """
+    Render the Dispatcher home page.
+    :param request:
+    :return: Render template
+    """
     update_process_queue()
     update_dispatch_queue()
 
@@ -68,6 +73,14 @@ def index(request):
 
 
 def dispatch(request):
+    """
+    Dispatch an order
+    The function will:
+        dispatch the order that can be contained in the next shipment
+        send email to the clinic manager for each order within the shipment, as a notification.
+    :param request:
+    :return: CSV file as a response.
+    """
     import csv
     orders_to_dispatch = DispatchQueue.objects.all().order_by('queue_number')
 
