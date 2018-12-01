@@ -26,6 +26,9 @@ addToCart = (id) => {
                 if (res['msg'] == "overweight"){
                     alert('The order has already crossed the weight limit of 23.8kg');
                 }
+                if (res['msg'] == "done"){
+                    $.notify('Added to cart', 'success');
+                }
             }
         });
     }
