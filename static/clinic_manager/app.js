@@ -106,6 +106,7 @@ notifyDelivery = (e) =>{
     });
 
     console.log("Delivery Notified");
+    window.location.href = window.location.origin + '/clinic_manager/orders/';
 };
 
 cancelOrder = (e) =>{
@@ -128,4 +129,5 @@ cancelOrder = (e) =>{
     });
 
     console.log("Order Cancelled");
+    window.location.href = window.location.origin + '/clinic_manager/orders/';
 };

@@ -153,6 +153,8 @@ def register_after_token(request):
                 warehouse_personnel = WarehousePersonnel(user=user_django)
                 warehouse_personnel.save()
 
+            auth_user.delete()
+
             return HttpResponseRedirect('/')
 
     else:

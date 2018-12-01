@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.core.mail import send_mail
 from ha.models import Item
-from .models import DispatchQueue
+from .models import DispatchQueue, Dispatcher
 from clinic_manager.models import Order, ClinicManager
 from ha.models import LocationData
 from ASP.global_functions import update_dispatch_queue, update_process_queue, route_plan
@@ -11,6 +11,7 @@ import json
 
 
 def index(request):
+    Dispatcher.objects.get(user=request.user)
     """
     Render the Dispatcher home page.
     :param request:
@@ -72,6 +73,7 @@ def index(request):
 
 
 def dispatch(request):
+    Dispatcher.objects.get(user=request.user)
     """
     Dispatch an order
     The function will:
