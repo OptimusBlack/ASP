@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block headers %}
+    <link rel="stylesheet" type="text/css" href="{% static 'warehouse/style.css'%}">
 {% endblock %}
 {% block page %}
     <div class="row" id="heading">
@@ -12,73 +13,97 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="pure-container" data-effect="pure-effect-slide">
+        <input type="checkbox" id="pure-toggle-right" class="pure-toggle" data-toggle="right">
+        <label class="pure-toggle-label" for="pure-toggle-right" data-toggle-label="right">
+            <span class="pure-toggle-icon"></span>
+        </label>
 
-        <div class="row">
-
-            <div class="col-lg-12">
-
-                <div class="row">
-                    <h2>Next for Processing</h2>
-                        <div class="col-lg-12 col-md-12 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        Order ID: {{ order.id }}
-                                    </h4>
-                                    <h4 class="card-title">
-                                        Contents
-                                    </h4>
-                                    <ul class="list-group">
-                                        {% for content in order.content_details %}
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <h5>{{ content.name }}</h5>
-                                                <span class="badge badge-primary badge-pill" style="font-size: 22px;">{{ content.qty }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <p>Total weight: {{ order.total_weight }} kg</p>
-                                    <p>Clinic name: {{ order.order_clinic }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                </div><!-- /.row -->
-                <div class="row">
-                    <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=process_queue_pop()>Move to In Process</button>
+        <div class="pure-drawer" data-position="right">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav-primary">
+                        <li class="side-menu-options"><a href="/change_user_details/">Change User Info</a></li>
+                        <li class="side-menu-options"><a href="/change_password">Change User Password</a></li>
+                    </ul>
                 </div>
-                <div class="row">
-                    <h2>In Process</h2>
-                        <div class="col-lg-12 col-md-12 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        Order ID: {{ warehouse.id }}
-                                    </h4>
-                                    <h4 class="card-title">
-                                        Contents
-                                    </h4>
-                                    <ul class="list-group">
-                                        {% for content in warehouse.content_details %}
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <h5>{{ content.name }}</h5>
-                                                <span class="badge badge-primary badge-pill" style="font-size: 22px;">{{ content.qty }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <p>Total weight: {{ warehouse.total_weight }} kg</p>
-                                    <p>Clinic name: {{ warehouse.order_clinic }}</p>
+            </div>
+        </div>
+        <div class="pure-pusher-container">
+            <div class="pure-pusher">
+                <div class="container">
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+
+                            <div class="row">
+                                <h2>Next for Processing</h2>
+                                <div class="col-lg-12 col-md-12 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h4 class="card-title">
+                                                Order ID: {{ order.id }}
+                                            </h4>
+                                            <h4 class="card-title">
+                                                Contents
+                                            </h4>
+                                            <ul class="list-group">
+                                                {% for content in order.content_details %}
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <h5>{{ content.name }}</h5>
+                                                        <span class="badge badge-primary badge-pill" style="font-size: 22px;">{{ content.qty }}</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <p>Total weight: {{ order.total_weight }} kg</p>
+                                            <p>Clinic name: {{ order.order_clinic }}</p>
+                                        </div>
+                                    </div>
                                 </div>
+
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=process_queue_pop()>Move to In Process</button>
                             </div>
-                        </div>
-                </div><!-- /.row -->
-                <div class="row">
-                    <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_process()>Queue for Dispatch</button>
-                </div>
-            </div>            <!-- /.col-lg-12 -->
+                            <div class="row">
+                                <h2>In Process</h2>
+                                <div class="col-lg-12 col-md-12 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h4 class="card-title">
+                                                Order ID: {{ warehouse.id }}
+                                            </h4>
+                                            <h4 class="card-title">
+                                                Contents
+                                            </h4>
+                                            <ul class="list-group">
+                                                {% for content in warehouse.content_details %}
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <h5>{{ content.name }}</h5>
+                                                        <span class="badge badge-primary badge-pill" style="font-size: 22px;">{{ content.qty }}</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <p>Total weight: {{ warehouse.total_weight }} kg</p>
+                                            <p>Clinic name: {{ warehouse.order_clinic }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_process()>Queue for Dispatch</button>
+                            </div>
+                        </div>            <!-- /.col-lg-12 -->
 
-        </div>        <!-- /.row -->
+                    </div>        <!-- /.row -->
 
-    </div>    <!-- /.container -->
+                </div>    <!-- /.container -->
+            </div>
+        </div>
+        <label class="pure-overlay" for="pure-toggle-left" data-overlay="left"></label>
+    </div>
+
+
     <script src={% static 'warehouse/app.js' %}></script>
 {% endblock %}

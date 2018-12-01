@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block headers %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dispatcher/style.css'%}">
 {% endblock %}
 {% block page %}
     <div class="row" id="heading">
@@ -12,42 +13,68 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="pure-container" data-effect="pure-effect-slide">
+        <input type="checkbox" id="pure-toggle-right" class="pure-toggle" data-toggle="right">
+        <label class="pure-toggle-label" for="pure-toggle-right" data-toggle-label="right">
+            <span class="pure-toggle-icon"></span>
+        </label>
 
-        <div class="row">
-
-            <div class="col-lg-12">
-
-                <div class="row">
-                    <h2>Next shipment to dispatch</h2>
-                    <div class="card-columns">
-                        {% for order in orders %}
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Order ID: {{ order.id }}</h5>
-                                    <h5 class="card-title">Contents</h5>
-                                    <ul class="list-group">
-                                        {% for content in order.content_details %}
-                                            <li class="list-group-item d-flex justify-content-between align-items-center" style="padding-right: 0px; padding-left: 0px;">
-                                                <p>{{ content.name }}</p>
-                                                <span class="badge badge-primary badge-pill" style="font-size: 12px;">{{ content.qty }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <p class="card-text"><small class="text-muted">Total weight: {{ order.total_weight }} kg</small></p>
-                                    <p class="card-text"><small class="text-muted">Clinic name: {{ order.order_clinic }}</small></p>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div><!-- /.row -->
-                <div class="row">
-                    <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_dispatch()>Dispatch</button>
+        <div class="pure-drawer" data-position="right">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav-primary">
+                        <li class="side-menu-options"><a href="/change_user_details/">Change User Info</a></li>
+                        <li class="side-menu-options"><a href="/change_password">Change User Password</a></li>
+                    </ul>
                 </div>
-            </div>            <!-- /.col-lg-12 -->
+            </div>
+        </div>
+        <div class="pure-pusher-container">
+            <div class="pure-pusher">
+                <div class="container">
 
-        </div>        <!-- /.row -->
+                    <div class="row">
 
-    </div>    <!-- /.container -->
+                        <div class="col-lg-12">
+
+                            <div class="row">
+                                <h2>Next shipment to dispatch</h2>
+                                <div class="card-columns">
+                                    {% for order in orders %}
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Order ID: {{ order.id }}</h5>
+                                                <h5 class="card-title">Contents</h5>
+                                                <ul class="list-group">
+                                                    {% for content in order.content_details %}
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center" style="padding-right: 0px; padding-left: 0px;">
+                                                            <p>{{ content.name }}</p>
+                                                            <span class="badge badge-primary badge-pill" style="font-size: 12px;">{{ content.qty }}</span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <p class="card-text"><small class="text-muted">Total weight: {{ order.total_weight }} kg</small></p>
+                                                <p class="card-text"><small class="text-muted">Clinic name: {{ order.order_clinic }}</small></p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <button class="btn btn-secondary btn-lg btn-block" id="checkout-button" onClick=execute_dispatch()>Dispatch</button>
+                            </div>
+                        </div>            <!-- /.col-lg-12 -->
+
+                    </div>        <!-- /.row -->
+
+                </div>    <!-- /.container -->
+            </div>
+        </div>
+        <label class="pure-overlay" for="pure-toggle-left" data-overlay="left"></label>
+    </div>
+
+
+
+
     <script src={% static 'dispatcher/app.js' %}></script>
 {% endblock %}
