@@ -70,7 +70,7 @@ def route_plan(orders):
 
     all_locations = [(8, "Queen Mary Hospital Drone Port")]
     for locations in orders:
-        if locations.order_clinic not in all_locations:
+        if (LocationData.objects.get(name=locations.order_clinic).id, locations.order_clinic) not in all_locations:
             all_locations.append((LocationData.objects.get(name=locations.order_clinic).id, locations.order_clinic))
     # Add last location to be Queen Mary Hospital
     all_locations.append((8, "Queen Mary Hospital Drone Port"))
