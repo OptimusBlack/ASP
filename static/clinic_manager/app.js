@@ -64,7 +64,11 @@ placeOrder = () =>{
             "Content-type" : 'application/json'
         },
     });
-    window.location.href = window.location.origin + '/clinic_manager/home/';
+    $.notify('Order Placed!', 'success');
+
+    setTimeout(function() {
+                window.location.href = window.location.origin + '/clinic_manager/home/';
+                }, 2000);
 };
 
 
