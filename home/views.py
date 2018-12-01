@@ -5,6 +5,7 @@ from .forms import RegistrationForm, RegistrationTokenForm, RegistrationTokenAft
 from .models import RegistrationToken
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User as UserDjango
+from django.core.mail import send_mail
 from clinic_manager.models import ClinicManager
 from dispatcher.models import Dispatcher
 from warehouse.models import WarehousePersonnel
@@ -77,6 +78,12 @@ def register(request):
                 role = form.cleaned_data['role']
                 RegistrationToken(token=token, email=email, role=role).save()
 
+                send_mail(
+                    'Your registration token for ASP',
+                    'Your registration token is: ' + token + '.\nPlease use this token to register on ASP.',
+                    'asp-reg@example.com',
+                    recipient_list=[email]
+                )
                 return render(request, 'home/download_token.html', {'token': token, 'role': role})
 
         else:
