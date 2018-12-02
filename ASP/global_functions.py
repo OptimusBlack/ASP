@@ -3,6 +3,7 @@ from warehouse.models import ProcessQueue
 from dispatcher.models import DispatchQueue
 from ha.models import LocationData
 from tsp_solver.greedy import solve_tsp
+import json
 
 
 def update_process_queue():
@@ -38,18 +39,12 @@ def update_dispatch_queue():
 
 
 def generate_distance_matrix(locations):
-    distance_matrix = [
-        [],
-        [12.54],
-        [4.68, 9.92],
-        [15.32, 2.96, 12.88],
-        [14.44, 26.29, 18.90, 28.71],
-        [16.41, 5.45, 12.64, 5.53, 30.72],
-        [16.24, 4.87, 12.62, 4.77, 30.47, 0.77],
-        [13.74, 5.52, 9.61, 7.19, 28.18, 3.44, 3.79],
-        [22.83, 10.56, 19.38, 8.53, 36.83, 7.27, 6.77, 10.27]
-    ]
 
+    distance_matrix = []
+    for location in LocationData.objects.all():
+        distance_matrix.append(json.loads(location.distances)['distances'])
+
+    print(distance_matrix)
     result_matrix = [[]]
     for i in range(1, len(locations)):
         result_matrix_element = []
