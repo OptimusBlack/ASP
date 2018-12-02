@@ -1,0 +1,14 @@
+blockdiag==1.5.4
+Django==2.1.2
+django-extensions==2.1.3
+funcparserlib==0.3.6
+Pillow==5.3.0
+pip==18.1
+pygraphviz==1.5
+pytz==2018.5
+reportlab==3.5.10
+seqdiag==0.9.6
+setuptools==39.1.0
+six==1.11.0
+tsp-solver2==0.3
+webcolors==1.8.1
